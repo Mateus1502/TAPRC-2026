@@ -1,4 +1,4 @@
-![Arquitetura do projeto](Arquitetura TAPR.png)
+![Arquitetura do projeto](Arquitetura_TAPR.png)
 
 
 Alunos do grupo:
