@@ -1,3 +1,6 @@
+![Arquitetura do projeto](Arquitetura TAPR.png)
+
+
 Alunos do grupo:
 Danielli Tomaz,
 Gustavo dos Anjos,
