@@ -35,8 +35,10 @@ def timer_trigger(myTimer: func.TimerRequest) -> None:
     """
     
     categorias_selecionada=pd.read_sql(categorias,conn)
+
+    logging.info(f"\n--- TABELA CATEGORIAS ---\n{categorias_selecionada.to_string()}\n------------------------")
     
-    print(categorias_selecionada)
+    #print(categorias_selecionada) descartado no terminal do Azure, pois nao e possivel visualizar o print no terminal do Azure
     conn.close()
     if myTimer.past_due:
         logging.info('The timer is past due!')
