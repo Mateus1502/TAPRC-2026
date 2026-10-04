@@ -21,7 +21,7 @@ app = func.FunctionApp()
 def timer_trigger(myTimer: func.TimerRequest) -> None:
     
     conn = pyodbc.connect(
-        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
+        f"DRIVER={{ODBC Driver 18 for SQL Server}};"
         f"SERVER={DB_SERVER};"
         f"DATABASE={DB_DATABASE};"
         f"UID={DB_USER};"
@@ -31,7 +31,8 @@ def timer_trigger(myTimer: func.TimerRequest) -> None:
     )
     
     categorias ="""
-    SELECT * FROM categoria
+    SELECT *
+    FROM [db-univille].itsm.categoria 
     """
     
     categorias_selecionada=pd.read_sql(categorias,conn)
