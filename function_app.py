@@ -6,7 +6,7 @@ import pyodbc
 
 
 # ==========================================================
-# VARIAVEIS DE AMBIENTE
+# VARIÁVEIS DE AMBIENTE
 # ==========================================================
 
 DB_SERVER = os.getenv("HOST")
@@ -14,12 +14,30 @@ DB_DATABASE = os.getenv("DATABASE")
 DB_USER = os.getenv("USER")
 DB_PASSWORD = os.getenv("PASSWORD")
 
+
+# ==========================================================
+# CONFIGURAÇÃO DA FUNÇÃO
+# ==========================================================
+
 app = func.FunctionApp()
 
-@app.timer_trigger(schedule="*/1 * * * *", arg_name="myTimer", run_on_startup=False,
-              use_monitor=False) 
+
+@app.timer_trigger(
+    schedule="*/1 * * * *",
+    arg_name="myTimer",
+    run_on_startup=False,
+    use_monitor=False
+)
 def timer_trigger(myTimer: func.TimerRequest) -> None:
-    
+
+    logging.info("========================================")
+    logging.info("Iniciando consulta das tabelas ITSМ")
+    logging.info("========================================")
+
+    # ------------------------------------------------------
+    # Conexão com o banco
+    # ------------------------------------------------------
+
     conn = pyodbc.connect(
         f"DRIVER={{ODBC Driver 18 for SQL Server}};"
         f"SERVER={DB_SERVER};"
@@ -29,18 +47,224 @@ def timer_trigger(myTimer: func.TimerRequest) -> None:
         "Encrypt=yes;"
         "Connection Timeout=30;"
     )
-    
-    categorias ="""
-    SELECT *
-    FROM [db-univille].itsm.categoria 
-    """
-    
-    categorias_selecionada=pd.read_sql(categorias,conn)
 
-    logging.info(f"\n--- TABELA CATEGORIAS ---\n{categorias_selecionada.to_string()}\n------------------------")
-    
-    #print(categorias_selecionada) descartado no terminal do Azure, pois nao e possivel visualizar o print no terminal do Azure
-    conn.close()
+    try:
+
+        # --------------------------------------------------
+        # 1. CATEGORIA
+        # --------------------------------------------------
+
+        logging.info("Consultando tabela CATEGORIA...")
+
+        categorias = """
+            SELECT *
+            FROM [db-univille].itsm.categoria
+        """
+
+        categorias_selecionada = pd.read_sql(categorias, conn)
+
+        logging.info(
+            f"Tabela CATEGORIA consultada com sucesso. "
+            f"Registros encontrados: {len(categorias_selecionada)}"
+        )
+
+        # --------------------------------------------------
+        # 2. ANALISTA
+        # --------------------------------------------------
+
+        logging.info("Consultando tabela ANALISTA...")
+
+        analista = """
+            SELECT *
+            FROM [db-univille].itsm.analista
+        """
+
+        analista_selecionado = pd.read_sql(analista, conn)
+
+        logging.info(
+            f"Tabela ANALISTA consultada com sucesso. "
+            f"Registros encontrados: {len(analista_selecionado)}"
+        )
+
+        # --------------------------------------------------
+        # 3. CHAMADO
+        # --------------------------------------------------
+
+        logging.info("Consultando tabela CHAMADO...")
+
+        chamado = """
+            SELECT *
+            FROM [db-univille].itsm.chamado
+        """
+
+        chamado_selecionado = pd.read_sql(chamado, conn)
+
+        logging.info(
+            f"Tabela CHAMADO consultada com sucesso. "
+            f"Registros encontrados: {len(chamado_selecionado)}"
+        )
+
+        # --------------------------------------------------
+        # 4. CHAMADO_SLA
+        # --------------------------------------------------
+
+        logging.info("Consultando tabela CHAMADO_SLA...")
+
+        chamado_sla = """
+            SELECT *
+            FROM [db-univille].itsm.chamado_sla
+        """
+
+        chamado_sla_selecionado = pd.read_sql(chamado_sla, conn)
+
+        logging.info(
+            f"Tabela CHAMADO_SLA consultada com sucesso. "
+            f"Registros encontrados: {len(chamado_sla_selecionado)}"
+        )
+
+        # --------------------------------------------------
+        # 5. CHAMADO_STATUS_HISTORICO
+        # --------------------------------------------------
+
+        logging.info("Consultando tabela CHAMADO_STATUS_HISTORICO...")
+
+        chamado_status_historico = """
+            SELECT *
+            FROM [db-univille].itsm.chamado_status_historico
+        """
+
+        historico_selecionado = pd.read_sql(
+            chamado_status_historico,
+            conn
+        )
+
+        logging.info(
+            f"Tabela CHAMADO_STATUS_HISTORICO consultada com sucesso. "
+            f"Registros encontrados: {len(historico_selecionado)}"
+        )
+
+        # --------------------------------------------------
+        # 6. CLIENTE_ORGANIZACAO
+        # --------------------------------------------------
+
+        logging.info("Consultando tabela CLIENTE_ORGANIZACAO...")
+
+        cliente_organizacao = """
+            SELECT *
+            FROM [db-univille].itsm.cliente_organizacao
+        """
+
+        cliente_organizacao_selecionado = pd.read_sql(
+            cliente_organizacao,
+            conn
+        )
+
+        logging.info(
+            f"Tabela CLIENTE_ORGANIZACAO consultada com sucesso. "
+            f"Registros encontrados: "
+            f"{len(cliente_organizacao_selecionado)}"
+        )
+
+        # --------------------------------------------------
+        # 7. CSAT_AVALIACAO
+        # --------------------------------------------------
+
+        logging.info("Consultando tabela CSAT_AVALIACAO...")
+
+        csat_avaliacao = """
+            SELECT *
+            FROM [db-univille].itsm.csat_avaliacao
+        """
+
+        csat_avaliacao_selecionado = pd.read_sql(
+            csat_avaliacao,
+            conn
+        )
+
+        logging.info(
+            f"Tabela CSAT_AVALIACAO consultada com sucesso. "
+            f"Registros encontrados: "
+            f"{len(csat_avaliacao_selecionado)}"
+        )
+
+        # --------------------------------------------------
+        # 8. FILA
+        # --------------------------------------------------
+
+        logging.info("Consultando tabela FILA...")
+
+        fila = """
+            SELECT *
+            FROM [db-univille].itsm.fila
+        """
+
+        fila_selecionada = pd.read_sql(fila, conn)
+
+        logging.info(
+            f"Tabela FILA consultada com sucesso. "
+            f"Registros encontrados: {len(fila_selecionada)}"
+        )
+
+        # --------------------------------------------------
+        # 9. SLA
+        # --------------------------------------------------
+
+        logging.info("Consultando tabela SLA...")
+
+        sla = """
+            SELECT *
+            FROM [db-univille].itsm.sla
+        """
+
+        sla_selecionada = pd.read_sql(sla, conn)
+
+        logging.info(
+            f"Tabela SLA consultada com sucesso. "
+            f"Registros encontrados: {len(sla_selecionada)}"
+        )
+
+        # --------------------------------------------------
+        # 10. SOLICITANTE
+        # --------------------------------------------------
+
+        logging.info("Consultando tabela SOLICITANTE...")
+
+        solicitante = """
+            SELECT *
+            FROM [db-univille].itsm.solicitante
+        """
+
+        solicitante_selecionado = pd.read_sql(
+            solicitante,
+            conn
+        )
+
+        logging.info(
+            f"Tabela SOLICITANTE consultada com sucesso. "
+            f"Registros encontrados: "
+            f"{len(solicitante_selecionado)}"
+        )
+
+        # --------------------------------------------------
+        # Finalização
+        # --------------------------------------------------
+
+        logging.info("========================================")
+        logging.info("Todas as consultas foram realizadas.")
+        logging.info("Processo finalizado com sucesso.")
+        logging.info("========================================")
+
+    except Exception as e:
+
+        logging.error(f"Erro ao consultar as tabelas: {e}")
+        raise
+
+    finally:
+
+        conn.close()
+        logging.info("Conexão com o banco encerrada.")
+
     if myTimer.past_due:
-        logging.info('The timer is past due!')
-    logging.info('Python timer trigger function executed.')
+        logging.info("The timer is past due!")
+
+    logging.info("Python timer trigger function executed.")
